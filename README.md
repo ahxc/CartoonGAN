@@ -21,7 +21,7 @@ python train.py --dataset persoon2cartoon --img_size 256 --...
 Different from CycleGAN, CartoonGAN added a fuzzy dataset, I provides a simple script(smooth.py) for generating fuzzy data sets, 
 
 ```
-python smoother.py --dataset persoon2cartoon --img_size 256
+python smoother.py --dataset persoon2cartoon --img_size 256 --kernerl_size 5
 ```
 
 Your data directory structure should look like this
