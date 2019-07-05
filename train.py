@@ -24,13 +24,14 @@ flags.DEFINE_string('GAN_TYPE', 'GAN', 'Whether to use gradient penalty')
 flags.DEFINE_integer('img_size', 256, 'image size, default: 256')
 flags.DEFINE_integer('save_image_step', 1000, 'save the image every 100 steps')
 flags.DEFINE_integer('save_summary_step', 100, 'save the summary every 100 steps')
-flags.DEFINE_integer('total_epoch', 10, 'Total training epochs, default: 10')
+flags.DEFINE_integer('total_epoch', 100, 'Total training epochs, default: 10')
 
 flags.DEFINE_float("l1_lambda", 10, 'a weight of l1_loss, default: 10')
 flags.DEFINE_float('gp_lambda', 10, 'a weight of gradient penalty, default: 10')
 flags.DEFINE_float('vgg_weight', 10, 'a weight of vgg_loss, default: 10')
 flags.DEFINE_float('adv_weight', 1, 'a weight of GAN, default: 10')
 flags.DEFINE_float('learning_rate', 2e-4, 'the learning rate of train, default: 0.0002')
+flags.DEFINE_float('attenuation_rate', 0.99, 'the attenuation rate of learning rate')
 #-----------------------------------------------------------------------------------
 # 主进程
 def main():
@@ -116,7 +117,7 @@ def main():
 
     length = len(list_a)
 
-    init_lr = FLAGS.learning_rate*pow(0.9, step_now//length)
+    init_lr = FLAGS.learning_rate*pow(FLAGS.attenuation_rate, step_now//length)
 
     # 训练开始
     for step in range(step_now, FLAGS.total_epoch*length):
@@ -131,7 +132,7 @@ def main():
         if step%length == 0 and step != 0:
             model_save(model_saver, sess, step-1, model_path)
 
-            init_lr *= 0.9
+            init_lr *= FLAGS.attenuation_rate
             print('learning rate: {}'.format(init_lr))
 
             shuffle(list_a), shuffle(list_b), shuffle(list_bs)
@@ -153,9 +154,12 @@ def main():
             _, loss_value_g = sess.run([optim_G, loss_generator], feed_dict=feed_dict)
 
             if (step+1)%FLAGS.save_summary_step == 0:
-                print('step: %7d, generator_loss: %.3f, discriminator_loss: %.3f'%(step+1, loss_value_g, loss_value_d))
+                print('step: %7d, generator_loss: %.3f, discriminator_loss: %.3f'%(
+                    step+1, loss_value_g, loss_value_d))
 
-                sum_value_g, sum_value_d = sess.run([sum_generator, sum_discriminator], feed_dict=feed_dict)
+                sum_value_g, sum_value_d = sess.run([sum_generator, sum_discriminator],
+                    feed_dict=feed_dict)
+
                 summary_writer.add_summary(sum_value_g, step+1)
                 summary_writer.add_summary(sum_value_d, step+1)
 
