@@ -18,13 +18,11 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string('save_model_path', './model/', 'the save path for the model')
 flags.DEFINE_string('load_model_path', None, 'the loading path of the model')
 flags.DEFINE_string('outfile_path', './outfile/', 'the save path for the visual files')
-flags.DEFINE_string('trainA', './dataset/person2cartoon/trainA', 'the path of the training domainA')
-flags.DEFINE_string('trainB', './dataset/person2cartoon/trainB', 'the path of the training domainB')
-flags.DEFINE_string('trainB_smooth', './dataset/person2cartoon/trainB_smooth', 'the path of the blured domainB')
+flags.DEFINE_string('dataset', 'person2cartoon', 'the path of the training dataset')
 flags.DEFINE_string('GAN_TYPE', 'GAN', 'Whether to use gradient penalty')
 
 flags.DEFINE_integer('img_size', 256, 'image size, default: 256')
-flags.DEFINE_integer('save_image_step', 100, 'save the image every 100 steps')
+flags.DEFINE_integer('save_image_step', 1000, 'save the image every 100 steps')
 flags.DEFINE_integer('save_summary_step', 100, 'save the summary every 100 steps')
 flags.DEFINE_integer('total_epoch', 10, 'Total training epochs, default: 10')
 
@@ -106,14 +104,19 @@ def main():
 
         step_now = int(metapath.split('-')[-1].split('.')[0])
 
-    list_a = glob_dataset(FLAGS.trainA)
-    list_b = glob_dataset(FLAGS.trainB)
-    list_bs = glob_dataset(FLAGS.trainB_smooth)
+    dataset_path = os.path.join('./dataset', FLAGS.dataset)
+    trainA = os.path.join(dataset_path, 'trainA')
+    trainB = os.path.join(dataset_path, 'trainB')
+    trainB_smooth = os.path.join(dataset_path, 'trainB_smooth')
+
+    list_a = glob_dataset(trainA)
+    list_b = glob_dataset(trainB)
+    list_bs = glob_dataset(trainB_smooth)
     list_a, list_b, list_bs = alignment_data(list_a, list_b, list_bs)
 
     length = len(list_a)
 
-    init_lr = FLAGS.learning_rat*pow(0.9, step_now//length)
+    init_lr = FLAGS.learning_rate*pow(0.9, step_now//length)
 
     # 训练开始
     for step in range(step_now, FLAGS.total_epoch*length):
