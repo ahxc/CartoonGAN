@@ -19,7 +19,7 @@ flags.DEFINE_string('save_model_path', './model/', 'the save path for the model'
 flags.DEFINE_string('load_model_path', None, 'the loading path of the model')
 flags.DEFINE_string('outfile_path', './outfile/', 'the save path for the visual files')
 flags.DEFINE_string('dataset', 'person2cartoon', 'the path of the training dataset')
-flags.DEFINE_string('GAN_TYPE', 'GAN', 'Whether to use gradient penalty')
+flags.DEFINE_string('GAN_TYPE', 'LSGAN', 'It determines gan\'s loss')
 
 flags.DEFINE_integer('img_size', 256, 'image size, default: 256')
 flags.DEFINE_integer('save_image_step', 1000, 'save the image every 100 steps')
@@ -64,10 +64,10 @@ def main():
 
     # 定义损失
     loss_v = FLAGS.vgg_weight*vgg_loss(real_a, fake_b)
-    loss_g = FLAGS.adv_weight*G_loss(d_fake_b)
+    loss_g = FLAGS.adv_weight*G_loss(d_fake_b, FLAGS.GAN_TYPE)
 
     loss_generator = loss_v+loss_g
-    loss_discriminator = FLAGS.adv_weight*D_loss(d_real_b, d_fake_b, d_real_bs)+FLAGS.gp_lambda*GP
+    loss_discriminator = FLAGS.adv_weight*D_loss(d_real_b, d_fake_b, d_real_bs, FLAGS.GAN_TYPE)+FLAGS.gp_lambda*GP
 
     # 训练参数
     variables = tf.trainable_variables()

@@ -9,22 +9,40 @@ def L1_loss(A, B):
     return tf.reduce_mean(abs(A-B))
 #-----------------------------------------------------------------------------------
 # 生成器损失
-def G_loss(fake):
-    return tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
-                          labels=tf.ones_like(fake), logits=fake))
-    #return -tf.reduce_mean(fake)
+def G_loss(fake, GAN_TYPE):
+    if GAN_TYPE == 'GAN':
+        loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+                              labels=tf.ones_like(fake), logits=fake))
+
+    if GAN_TYPE == 'WGAN':
+        loss = -tf.reduce_mean(fake)
+
+    if GAN_TYPE == 'LSGAN':
+        loss = tf.reduce_mean((fake-tf.ones_like(fake)**2))
+
+    return loss
 #-----------------------------------------------------------------------------------
 # 判别器损失
-def D_loss(real, fake, blured_real):
-    real_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
-                               labels=tf.ones_like(real), logits=real))
-    fake_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
-                               labels=tf.zeros_like(fake), logits=fake))
-    real_blur_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
-                               labels=tf.zeros_like(blured_real), logits=blured_real))
+def D_loss(real, fake, blured_real, GAN_TYPE):
+    if GAN_TYPE == 'GAN': 
+        real_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+                                   labels=tf.ones_like(real), logits=real))
+        fake_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+                                   labels=tf.zeros_like(fake), logits=fake))
+        blured_real_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+                                   labels=tf.zeros_like(blured_real), logits=blured_real))
 
-    return real_loss+fake_loss+real_blur_loss
-    #return tf.reduce_mean(fake)-tf.reduce_mean(real)+tf.reduce_mean(blured_real)
+    if GAN_TYPE == 'WGAN':
+        real_loss = -tf.reduce_mean(real)
+        fake_loss = tf.reduce_mean(fake)
+        blured_real_loss = tf.reduce_mean(blured_real)
+
+    if GAN_TYPE == 'LSGAN':
+        real_loss = tf.reduce_mean((real-tf.ones_like(real))**2)
+        fake_loss = tf.reduce_mean((fake-tf.ones_like(real))**2)
+        blured_real_loss = tf.reduce_mean((blured_real-tf.ones_like(blured_real))**2)
+
+    return real_loss+fake_loss+blured_real_loss
 #-----------------------------------------------------------------------------------
 # vgg损失
 def vgg_loss(real, fake):
