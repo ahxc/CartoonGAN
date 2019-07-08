@@ -18,7 +18,7 @@ To get better results, the training time is much longer than cycleGAN
 python train.py --dataset persoon2cartoon --img_size 256 --...
 ```
 
-Different from CycleGAN, CartoonGAN added a fuzzy dataset, I provides a simple script(smooth.py) for generating fuzzy data sets, 
+Different from CycleGAN, CartoonGAN added a fuzzy dataset, I provides a simple script(smoother.py) for generating fuzzy dataset, 
 
 ```
 python smoother.py --dataset persoon2cartoon --img_size 256 --kernerl_size 5
