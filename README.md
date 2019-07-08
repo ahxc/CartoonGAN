@@ -54,3 +54,5 @@ Your data directory structure should look like this
 code: [github-CartoonGAN](https://github.com/taki0112/CartoonGAN-Tensorflow)
 
 blog: [zhihu-CartoonGAN](https://zhuanlan.zhihu.com/p/40725950)
+
+paper: [CVF-CartoonGAN](http://openaccess.thecvf.com/content_cvpr_2018/html/Chen_CartoonGAN_Generative_Adversarial_CVPR_2018_paper.html)
