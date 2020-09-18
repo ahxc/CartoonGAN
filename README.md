@@ -1,7 +1,7 @@
 # CartoonGAN
 cartoonGAN主要实现现实世界向卡通世界的图像风格转换。
 
-## Environment
+## 环境
 python 3.6.3
 
 tensorflow 1.10
