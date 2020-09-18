@@ -1,6 +1,6 @@
 # CartoonGAN
-原作者论文地址: [CartoonGAN](http://openaccess.thecvf.com/content_cvpr_2018/html/Chen_CartoonGAN_Generative_Adversarial_CVPR_2018_paper.html) (CVPR 2018)
-cartoonGAN，实现现实世界向卡通世界的图像风格转换。
+cartoonGAN主要实现现实世界向卡通世界的图像风格转换。原作者论文地址: [CartoonGAN](http://openaccess.thecvf.com/content_cvpr_2018/html/Chen_CartoonGAN_Generative_Adversarial_CVPR_2018_paper.html) (CVPR 2018)
+
 
 ## Environment
 python 3.6.3
